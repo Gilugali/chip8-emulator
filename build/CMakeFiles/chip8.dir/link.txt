@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/chip8.dir/link.d CMakeFiles/chip8.dir/src/main.cpp.o CMakeFiles/chip8.dir/src/chip8.cpp.o CMakeFiles/chip8.dir/src/platform.cpp.o -o chip8  /usr/lib64/libsfml-graphics.so.2.6.2 /usr/lib64/libsfml-window.so.2.6.2 /usr/lib64/libsfml-audio.so.2.6.2 /usr/lib64/libsfml-system.so.2.6.2

@@ -24,6 +24,8 @@ public:
 
     std::array<uint8_t, NUM_KEYS> keys{};
 
+    uint8_t getSoundTimer() const { return soundTimer; }
+
 private:
     std::array<uint8_t, MEMORY_SIZE>   memory{};
     std::array<uint8_t, NUM_REGISTERS> V{};

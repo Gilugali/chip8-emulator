@@ -1,4 +1,5 @@
 #include "platform.h"
+#include <cmath>
 
 static constexpr std::array<int, 16> KEYMAP = {
     sf::Keyboard::X,
@@ -26,6 +27,22 @@ Platform::Platform(const char* title, int width, int height)
     texture.create(width, height);
     sprite.setTexture(texture);
     sprite.setScale(SCALE, SCALE);
+    buildBeep();
+}
+
+void Platform::buildBeep() {
+    constexpr unsigned SAMPLE_RATE = 44100;
+    constexpr float    FREQUENCY   = 440.f;
+    constexpr float    DURATION    = 0.1f;
+    constexpr unsigned SAMPLES     = static_cast<unsigned>(SAMPLE_RATE * DURATION);
+
+    std::vector<sf::Int16> raw(SAMPLES);
+    for (unsigned i = 0; i < SAMPLES; ++i)
+        raw[i] = static_cast<sf::Int16>(32767 * std::sin(2.f * M_PI * FREQUENCY * i / SAMPLE_RATE));
+
+    beepBuffer.loadFromSamples(raw.data(), SAMPLES, 1, SAMPLE_RATE);
+    beep.setBuffer(beepBuffer);
+    beep.setLoop(true);
 }
 
 bool Platform::processEvents(std::array<uint8_t, 16>& keys) {
@@ -59,4 +76,11 @@ void Platform::render(const std::array<uint8_t, 64 * 32>& display) {
     window.clear();
     window.draw(sprite);
     window.display();
+}
+
+void Platform::updateSound(uint8_t soundTimer) {
+    if (soundTimer > 0 && beep.getStatus() != sf::Sound::Playing)
+        beep.play();
+    else if (soundTimer == 0 && beep.getStatus() == sf::Sound::Playing)
+        beep.stop();
 }

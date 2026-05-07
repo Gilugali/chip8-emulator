@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
         if (cyclesToRun > 0)
             lastCycle = now;
 
+        platform.updateSound(chip8.getSoundTimer());
+
         if (chip8.drawFlag) {
             platform.render(chip8.display);
             chip8.drawFlag = false;
