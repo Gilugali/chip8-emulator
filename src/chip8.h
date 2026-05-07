@@ -19,19 +19,17 @@ public:
     void loadROM(const std::string& path);
     void cycle();
 
-    // Display framebuffer — 1 = pixel on, 0 = off
     std::array<uint8_t, DISPLAY_WIDTH * DISPLAY_HEIGHT> display{};
     bool drawFlag = false;
 
-    // Keypad state — set by platform layer
     std::array<uint8_t, NUM_KEYS> keys{};
 
 private:
     std::array<uint8_t, MEMORY_SIZE>   memory{};
-    std::array<uint8_t, NUM_REGISTERS> V{};    // general-purpose registers V0–VF
-    uint16_t I   = 0;                           // index register
-    uint16_t PC  = ROM_START;                   // program counter
-    uint8_t  SP  = 0;                           // stack pointer
+    std::array<uint8_t, NUM_REGISTERS> V{};
+    uint16_t I   = 0;
+    uint16_t PC  = ROM_START;
+    uint8_t  SP  = 0;
     std::array<uint16_t, STACK_SIZE> stack{};
 
     uint8_t delayTimer = 0;
