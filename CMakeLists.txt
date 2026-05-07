@@ -9,6 +9,7 @@ find_package(SFML 2.5 COMPONENTS graphics window system audio REQUIRED)
 add_executable(chip8
     src/main.cpp
     src/chip8.cpp
+    src/platform.cpp
 )
 
 target_include_directories(chip8 PRIVATE src)
