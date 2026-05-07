@@ -30,26 +30,36 @@ int main(int argc, char* argv[]) {
     chip8.loadROM(argv[1]);
 
     auto lastCycle = std::chrono::high_resolution_clock::now();
+    bool paused    = false;
 
     while (true) {
-        if (!platform.processEvents(chip8.keys))
-            break;
+        Action action = platform.processEvents(chip8.keys);
 
-        auto now     = std::chrono::high_resolution_clock::now();
-        auto elapsed = std::chrono::duration<double>(now - lastCycle).count();
+        if (action == Action::Quit)  break;
+        if (action == Action::Pause) paused = !paused;
+        if (action == Action::Reset) {
+            chip8.reset();
+            lastCycle = std::chrono::high_resolution_clock::now();
+            paused    = false;
+        }
 
-        int cyclesToRun = static_cast<int>(elapsed * cyclesPerSecond);
-        for (int i = 0; i < cyclesToRun; ++i)
-            chip8.cycle();
+        if (!paused) {
+            auto now     = std::chrono::high_resolution_clock::now();
+            auto elapsed = std::chrono::duration<double>(now - lastCycle).count();
 
-        if (cyclesToRun > 0)
-            lastCycle = now;
+            int cyclesToRun = static_cast<int>(elapsed * cyclesPerSecond);
+            for (int i = 0; i < cyclesToRun; ++i)
+                chip8.cycle();
 
-        platform.updateSound(chip8.getSoundTimer());
+            if (cyclesToRun > 0)
+                lastCycle = now;
 
-        if (chip8.drawFlag) {
-            platform.render(chip8.display);
-            chip8.drawFlag = false;
+            platform.updateSound(chip8.getSoundTimer());
+
+            if (chip8.drawFlag) {
+                platform.render(chip8.display);
+                chip8.drawFlag = false;
+            }
         }
     }
 

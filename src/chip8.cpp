@@ -33,7 +33,24 @@ void Chip8::loadFontset() {
         memory[FONTSET_START + i] = FONTSET[i];
 }
 
+void Chip8::reset() {
+    memory.fill(0);
+    V.fill(0);
+    display.fill(0);
+    stack.fill(0);
+    keys.fill(0);
+    I          = 0;
+    PC         = ROM_START;
+    SP         = 0;
+    delayTimer = 0;
+    soundTimer = 0;
+    drawFlag   = false;
+    loadFontset();
+    loadROM(romPath);
+}
+
 void Chip8::loadROM(const std::string& path) {
+    romPath = path;
     std::ifstream file(path, std::ios::binary | std::ios::ate);
     if (!file.is_open())
         throw std::runtime_error("Failed to open ROM: " + path);

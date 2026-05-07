@@ -45,14 +45,15 @@ void Platform::buildBeep() {
     beep.setLoop(true);
 }
 
-bool Platform::processEvents(std::array<uint8_t, 16>& keys) {
+Action Platform::processEvents(std::array<uint8_t, 16>& keys) {
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
-            return false;
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-            return false;
+            return Action::Quit;
         if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Escape) return Action::Quit;
+            if (event.key.code == sf::Keyboard::Space)  return Action::Pause;
+            if (event.key.code == sf::Keyboard::R)      return Action::Reset;
             for (int i = 0; i < 16; ++i)
                 if (event.key.code == KEYMAP[i]) keys[i] = 1;
         }
@@ -61,7 +62,7 @@ bool Platform::processEvents(std::array<uint8_t, 16>& keys) {
                 if (event.key.code == KEYMAP[i]) keys[i] = 0;
         }
     }
-    return true;
+    return Action::None;
 }
 
 void Platform::render(const std::array<uint8_t, 64 * 32>& display) {

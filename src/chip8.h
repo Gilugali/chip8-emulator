@@ -17,6 +17,7 @@ public:
     Chip8();
 
     void loadROM(const std::string& path);
+    void reset();
     void cycle();
 
     std::array<uint8_t, DISPLAY_WIDTH * DISPLAY_HEIGHT> display{};
@@ -36,6 +37,8 @@ private:
 
     uint8_t delayTimer = 0;
     uint8_t soundTimer = 0;
+
+    std::string romPath;
 
     void loadFontset();
     void executeOpcode(uint16_t opcode);

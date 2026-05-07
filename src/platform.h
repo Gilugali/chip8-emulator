@@ -7,11 +7,13 @@
 
 constexpr int SCALE = 10;
 
+enum class Action { None, Quit, Pause, Reset };
+
 class Platform {
 public:
     Platform(const char* title, int width, int height);
 
-    bool processEvents(std::array<uint8_t, 16>& keys);
+    Action processEvents(std::array<uint8_t, 16>& keys);
     void render(const std::array<uint8_t, 64 * 32>& display);
     void updateSound(uint8_t soundTimer);
 
