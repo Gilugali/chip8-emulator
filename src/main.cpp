@@ -2,20 +2,34 @@
 #include "platform.h"
 #include <iostream>
 #include <chrono>
+#include <string>
+#include <filesystem>
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cerr << "Usage: chip8 <rom>\n";
+        std::cerr << "Usage: chip8 <rom> [cycles-per-second]\n";
         return 1;
     }
 
+    int cyclesPerSecond = 700;
+    if (argc >= 3) {
+        try {
+            cyclesPerSecond = std::stoi(argv[2]);
+            if (cyclesPerSecond <= 0) throw std::invalid_argument("");
+        } catch (...) {
+            std::cerr << "Invalid cycles-per-second value: " << argv[2] << "\n";
+            return 1;
+        }
+    }
+
+    std::string title = "CHIP-8 — " + std::filesystem::path(argv[1]).filename().string();
+
     Chip8    chip8;
-    Platform platform("CHIP-8", DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    Platform platform(title.c_str(), DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
     chip8.loadROM(argv[1]);
 
     auto lastCycle = std::chrono::high_resolution_clock::now();
-    constexpr int CYCLES_PER_SECOND = 700;
 
     while (true) {
         if (!platform.processEvents(chip8.keys))
@@ -24,7 +38,7 @@ int main(int argc, char* argv[]) {
         auto now     = std::chrono::high_resolution_clock::now();
         auto elapsed = std::chrono::duration<double>(now - lastCycle).count();
 
-        int cyclesToRun = static_cast<int>(elapsed * CYCLES_PER_SECOND);
+        int cyclesToRun = static_cast<int>(elapsed * cyclesPerSecond);
         for (int i = 0; i < cyclesToRun; ++i)
             chip8.cycle();
 
